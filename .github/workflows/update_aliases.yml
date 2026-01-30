@@ -1,0 +1,30 @@
+name: Update Song Aliases
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0' # Weekly run
+
+jobs:
+  embed-aliases:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install requests qdrant-client
+
+      - name: Run Embedding Script
+        env:
+          SILICONFLOW_API_KEY: ${{ secrets.SILICONFLOW_API_KEY }}
+          QDRANT_HOST: ${{ secrets.QDRANT_HOST }}
+          QDRANT_PORT: ${{ secrets.QDRANT_PORT }}
+          QDRANT_API_KEY: ${{ secrets.QDRANT_API_KEY }}
+        run: python scripts/embed_aliases.py
